@@ -1,0 +1,5 @@
+name: sim-edge-mosquitto-broker
+version: 1.0
+appVersion: 0.1.2.1.3
+description: Mosquitto Broker App
+

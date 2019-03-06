@@ -1,0 +1,53 @@
+questions:
+
+- variable: "scale"
+  label: Container Scale
+  description: "Container Scale"
+  default: "1"
+  required: true
+  type: string
+  group: "Replica Set"
+
+- variable: "container_name"
+  label: Container Name
+  description: "Name of the container to be deployed."
+  default: "sim-edge-mosquitto-broker"
+  required: true
+  type: string
+  group: "Siemens Mosquitto Broker Configurations"
+  
+  #persistant volumes with storage class
+- variable: persistence.enabled
+  default: "false"
+  description: "Enable persistence using PVC"
+  type: boolean
+  required: true
+  label: Persistent Volume Enabled
+  show_subquestion_if: true
+  group: "Persistent Volume"
+  subquestions:
+  - variable: persistence.size
+    default: "8Gi"
+    description: "Volume Size"
+    type: string
+    label: Volume Size
+    required: true
+  - variable: persistence.storageClass
+    default: ""
+    description: "If undefined or null, uses the default StorageClass. Defaults to null."
+    type: storageclass
+    label: Default storageClass
+
+- variable: customResources.enablespecificdownload
+  default: false
+  description: "Download App to a specific device"
+  label: Enable Device Specific Download
+  type: boolean
+  show_subquestion_if: true
+  group: "Download Options"
+  subquestions:
+  - variable: nodeSelector.kubernetes\.io/hostname
+    default: "sim-edge-"
+    description: "Destination Device for App"
+    type: string
+    label: Specific Device

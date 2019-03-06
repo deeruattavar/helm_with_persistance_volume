@@ -1,0 +1,63 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "sim-edge-mosquitto-broker.fullname" . }}
+  labels:
+    app: {{ include "sim-edge-mosquitto-broker.name" . }}
+    chart: {{ include "sim-edge-mosquitto-broker.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.scale}}
+  selector:
+    matchLabels:
+      app: {{ include "sim-edge-mosquitto-broker.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "sim-edge-mosquitto-broker.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: "IfNotPresent"
+        name: {{ include "sim-edge-mosquitto-broker.name" . }}  
+        ports:
+        - containerPort: {{ .Values.service.port }}
+          name: https
+          protocol: TCP
+        - containerPort: 1884
+          name: iowa
+          protocol: TCP
+        volumeMounts:
+        - name: data
+          mountPath: /home/mosquitto/data
+          {{- if .Values.persistence.subPath }}
+          subPath: {{ .Values.persistence.subPath }}
+          {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "sim-edge-mosquitto-broker.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}   
+    {{- if .Values.customResources.enablespecificdownload }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

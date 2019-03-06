@@ -1,0 +1,20 @@
+{{- if .Values.service.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "sim-edge-mosquitto-broker.fullname" . }}
+  labels:
+    app: {{ include "sim-edge-mosquitto-broker.name" . }}
+    chart: {{ include "sim-edge-mosquitto-broker.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }} 
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - name: https
+    port: {{ .Values.service.port }}
+    protocol: TCP
+  selector:
+    app: {{ include "sim-edge-mosquitto-broker.name" . }}
+    release: {{ .Release.Name }}
+{{- end }}
