@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: siemens/sim-edge-app-mosquitto-broker:0.1.4.6.65
         imagePullPolicy: "IfNotPresent"
         name: {{ include "sim-edge-mosquitto-broker.name" . }}  
         ports:
