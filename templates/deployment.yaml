@@ -32,7 +32,7 @@ spec:
           name: iowa
           protocol: TCP
         volumeMounts:
-        - name: data
+        - name: myvolume
           mountPath: /home/mosquitto/data
           {{- if .Values.persistence.subPath }}
           subPath: {{ .Values.persistence.subPath }}
@@ -40,7 +40,7 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
-      - name: data
+      - name: myvolume
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim | default (include "sim-edge-mosquitto-broker.fullname" .) }}
